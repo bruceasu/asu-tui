@@ -1,0 +1,25 @@
+* tui
+一个命令行工具框架
+
+** 主类
+   me.asu.tui.Tool
+
+** 如何实现自己的命令
+
+*** 编写一个实现 =me.asu.tui.framework.api.Command= 接口的类
+
+*** 添加到类名到 =services=
+    META-INF/services/me.asu.tui.framework.api.Command
+
+** 更好的选择
+1. 本项目编译成可执行程序，
+2. 用独立的项目编写命令，打包成jar，并放到plugins目录。
+
+参考目录
+#+BEGIN_EXAMPLE
+|-- cli
+|-- cli.cmd
+|-- asu-tui-1.0.0-SNAPSHOT.jar
+|-- plugins    插件目录
+\-- lib        依赖目录
+#+END_EXAMPLE
