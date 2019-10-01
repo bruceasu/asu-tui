@@ -19,7 +19,8 @@
  */
 package me.asu.tui.framework.api;
 
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * The Command component is there to allow Controllers to delegate tasks.
@@ -89,7 +90,21 @@ public interface Command extends Plugin {
          * @return Map&lt;String,String&gt; key is argument, value = description of arg.
          */
         Map<String,String> getArguments();
-        
-        
+
+        default void printUsage(IoConsole c) {
+            String usage = getUsage();
+            c.printf("%s%n",usage);
+            Map<String, String> arguments = getArguments();
+            if (arguments != null && arguments.size() > 0) {
+                c.printf("%nOptions:");
+                c.printf("%n--------");
+                List<String> strings = new ArrayList<>(arguments.keySet());
+                strings.sort(Comparator.naturalOrder());
+                for (String key : strings) {
+                    c.printf("%n%1$-10s\t%2$s", key, arguments.get(key));
+                }
+            }
+            c.printf("%n");
+        }
     }
 }
