@@ -75,6 +75,7 @@ public class SysInfoCmd implements Command {
                     c.printf("%n%1$-10s\t%2$s", entry.getKey(), entry.getValue());
                 }
             }
+            c.printf("%n");
         }
 
         return null;

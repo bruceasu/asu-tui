@@ -101,8 +101,19 @@ public final class Shell {
             }
         }
 
+        // ------------------------------------------------------------
+        // initClassLoader
+        // ------------------------------------------------------------
         private static void initClassLoader() {
             // Create/get Context, if something goes wrong, exit.
+            createLibClassloader();
+
+            // load Plugins classloader
+            createPluginClassloader();
+
+        }
+
+        private static void createLibClassloader() {
             File libDir = (File) ctx.getValue(KEY_LIB_DIR);
             if (libDir.exists()) {
                 // load classes from lib directory
@@ -123,8 +134,9 @@ public final class Shell {
                 System.out.printf(text("lib.dir.not.found.error"), libDir.getAbsolutePath());
 
             }
+        }
 
-            // load Plugins classloader
+        private static void createPluginClassloader() {
             File pluginsDir = (File) ctx.getValue(KEY_PLUGINS_DIR);
             if (pluginsDir.exists()) {
                 ClassLoader pluginsCl = null;
@@ -146,8 +158,9 @@ public final class Shell {
                 System.out.printf(text("plugins.dir.not.found.error"),
                         pluginsDir.getAbsolutePath());
             }
-
         }
+
+        // ------------------------------------------------------------
 
         private static void loadPlugins() {
             try {
@@ -174,6 +187,37 @@ public final class Shell {
          */
         private static void loadComponents() {
             // activate console
+            activateConsole();
+
+            // activate controllers
+            activateControllers();
+        }
+
+        private static void activateControllers() {
+            List<InputController> controllers = ctx.getPluginsByType(InputController.class);
+            if (controllers.size() > 0) {
+                ctx.putValue(KEY_CONTROLLERS, controllers);
+                boolean sucOne = false;
+                for (InputController ctrl : controllers) {
+                    try {
+                        ctrl.plug(ctx);
+                        sucOne = true;
+                    } catch (Exception ex) {
+                        System.out.printf(text("controller.plug.error"), ctrl.getClass(),
+                                ex.getMessage());
+                        ctrl.setEnabled(false);
+                    }
+                }
+                if (!sucOne) {
+                    System.exit(1);
+                }
+            } else {
+                System.out.printf(text("controller.plug.not.found.error"));
+                System.exit(1);
+            }
+        }
+
+        private static void activateConsole() {
             List<IoConsole> ioConsoles = ctx.getPluginsByType(IoConsole.class);
             IoConsole console = null;
             if (ioConsoles != null && !ioConsoles.isEmpty()) {
@@ -194,29 +238,6 @@ public final class Shell {
                 ctx.putValue(KEY_CONSOLE_COMPONENT, console);
             } else {
                 System.out.printf(text("console.plug.not.found.error"));
-                System.exit(1);
-            }
-
-            // activate controllers
-            List<InputController> controllers = ctx.getPluginsByType(InputController.class);
-            if (controllers.size() > 0) {
-                ctx.putValue(KEY_CONTROLLERS, controllers);
-                boolean sucOne = false;
-                for (InputController ctrl : controllers) {
-                    try {
-                        ctrl.plug(ctx);
-                        sucOne = true;
-                    } catch (Exception ex) {
-                        System.out.printf(text("controller.plug.error"), ctrl.getClass(),
-                                ex.getMessage());
-                        ctrl.setEnabled(false);
-                    }
-                }
-                if (!sucOne) {
-                    System.exit(1);
-                }
-            } else {
-                System.out.printf(text("controller.plug.not.found.error"));
                 System.exit(1);
             }
         }
