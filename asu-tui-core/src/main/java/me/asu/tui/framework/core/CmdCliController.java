@@ -34,13 +34,14 @@ public class CmdCliController implements CliController
     {
         CommandLineParser parser = new CommandLineParser();
         String[] cmdLine = (String[]) ctx.getValue(CliContext.KEY_COMMAND_LINE_ARGS);
+        CliConsole console = ctx.getCliConsole();
         if (cmdLine == null) {
             // try
             String line = (String) ctx.getValue(CliContext.KEY_COMMAND_LINE_INPUT);
             if (line != null) {
                 parser.parse(line);
             } else {
-                ctx.getCliConsole().printf(text("command.not.found.error"), "");
+                console.printf(text("command.not.found.error"), "");
                 return false;
             }
         } else {
@@ -62,10 +63,13 @@ public class CmdCliController implements CliController
                     jobs.add(new BgRunner(cmd, parser.getArgs()));
                 } else {
                     try {
-                        cmd.execute(ctx, parser.getArgs());
+                        Object execute = cmd.execute(ctx, parser.getArgs());
+                        if (execute!=null) {
+                            console.printf("%s%n", execute);
+                        }
                     } catch (Exception ex) {
-                        ex.printStackTrace(ctx.getCliConsole().writer());
-                        ctx.getCliConsole()
+                        ex.printStackTrace(console.writer());
+                        console
                            .printf(text("command.exec.error"), Arrays.asList(cmdLine),
                                    ex.getMessage());
                     }
@@ -73,7 +77,7 @@ public class CmdCliController implements CliController
 
 
             } else {
-                ctx.getCliConsole().printf(text("command.not.found.error"), cmdLine[0]);
+                console.printf(text("command.not.found.error"), cmdLine[0]);
             }
             handled = true;
         }

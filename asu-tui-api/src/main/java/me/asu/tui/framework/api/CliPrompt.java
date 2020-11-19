@@ -22,9 +22,10 @@ public interface CliPrompt extends CliPlugin
      * @return the value for the prompt
      */
     default String getValue(CliContext ctx){
-        String home = System.getProperty("user.home");
-        Path path = Paths.get(".").toAbsolutePath();
-        return String.format("ASU-Shell [%s]> ", path.getFileName());
+        //String home = System.getProperty("user.home");
+        String cwd = System.getProperty("user.dir");
+        Path path = Paths.get(cwd);
+        return String.format("ASU-Shell [%s]> ", path);
     }
 
     @Override

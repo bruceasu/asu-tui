@@ -76,7 +76,7 @@ public class ShellWrapCmd implements CliCommand
         if (args != null && args.length > 0) {
             commands.addAll(Arrays.asList(args));
         }
-
+        builder.directory(new File(System.getProperty("user.dir")));
         builder.command(commands);
         try {
             Process p = builder.start();
@@ -85,7 +85,9 @@ public class ShellWrapCmd implements CliCommand
             new PipeThread(new InputStreamReader(p.getErrorStream(), getCharset()),
                     ctx.getCliConsole().writer()).start();
             int i = p.waitFor();
-            ctx.getCliConsole().printf("process return: %d%n", i);
+            if (i != 0) {
+                ctx.getCliConsole().printf("process return: %d%n", i);
+            }
             return i;
         } catch (IOException e) {
             ctx.getCliConsole().printf("%s%n", e.getMessage());

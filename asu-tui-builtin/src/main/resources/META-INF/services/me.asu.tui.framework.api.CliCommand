@@ -7,3 +7,4 @@ me.asu.tui.framework.command.GcCmd
 me.asu.tui.framework.command.HistoryCmd
 me.asu.tui.framework.command.JobsCmd
 me.asu.tui.framework.command.Native2asciiCmd
+me.asu.tui.framework.command.CdCmd
