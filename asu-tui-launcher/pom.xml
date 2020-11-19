@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>asu-tui</artifactId>
+        <groupId>me.asu</groupId>
+        <version>1.1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>asu-tui-launcher</artifactId>
+
+    <properties>
+        <!-- 编译参数 -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <main-class>me.asu.tui.Tool</main-class>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>me.asu</groupId>
+            <artifactId>asu-tui-api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>me.asu</groupId>
+            <artifactId>asu-tui-core</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>me.asu</groupId>
+            <artifactId>asu-tui-builtin</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.16</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- lombok -->
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.16.10.0</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <fork>true</fork>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArgs>
+                        <!--<arg>-XX:MaxPermSize=512M</arg>-->
+                        <arg>-verbose</arg>
+                        <!--<arg>-Xlint:unchecked</arg>-->
+                        <!--<arg>-Xlint:deprecation</arg>-->
+                        <!--<arg>-bootclasspath</arg>-->
+                        <!--<arg>${env.JAVA_HOME}/jre/lib/rt.jar</arg>-->
+                        <!--<arg>-extdirs</arg>-->
+                        <!--<arg>${project.basedir}/src/main/webapp/WEB-INF/lib</arg>-->
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <!-- surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <skip>${maven.test.skip}</skip>
+                </configuration>
+            </plugin>
+            <!-- jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                            <addClasspath>true</addClasspath>
+                            <!--							<classpathPrefix>lib/</classpathPrefix>-->
+                            <mainClass>me.asu.tui.Tool</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Specification-Title>${project.artifactId}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Built-By>Asu</Built-By>
+                            <!-- <Class-Path>. lib/ext.jar</Class-Path>-->
+                        </manifestEntries>
+                    </archive>
+                    <!-- 由具体的项目自己指定 -->
+                    <!--<excludes>-->
+                    <!--<exclude>**/*.properties</exclude>-->
+                    <!--<exclude>**/*.xml</exclude>-->
+                    <!--<exclude>**/*.json</exclude>-->
+                    <!--<exclude>**/*.groovy</exclude>-->
+                    <!--<exclude>**/*.py</exclude>-->
+                    <!--<exclude>**/*.jar</exclude>-->
+                    <!--</excludes>-->
+                </configuration>
+            </plugin>
+            <!-- dependency -->
+            <!--			<plugin>-->
+            <!--				<groupId>org.apache.maven.plugins</groupId>-->
+            <!--				<artifactId>maven-dependency-plugin</artifactId>-->
+            <!--				<version>2.10</version>-->
+            <!--				<executions>-->
+            <!--					<execution>-->
+            <!--						<id>copy-dependencies</id>-->
+            <!--						<phase>package</phase>-->
+            <!--						<goals>-->
+            <!--							<goal>copy-dependencies</goal>-->
+            <!--						</goals>-->
+            <!--						<configuration>-->
+            <!--							<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+            <!--						</configuration>-->
+            <!--					</execution>-->
+            <!--				</executions>-->
+            <!--			</plugin>-->
+
+            <plugin>
+                <groupId>com.jolira</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <attachToBuild>true</attachToBuild>
+                            <classifier>onejar</classifier>
+                        </configuration>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

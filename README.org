@@ -6,10 +6,10 @@
 
 ** 如何实现自己的命令
 
-*** 编写一个实现 =me.asu.tui.framework.api.Command= 接口的类
+*** 编写一个实现 =me.asu.tui.framework.api.CliCommand= 接口的类
 
 *** 添加到类名到 =services=
-    META-INF/services/me.asu.tui.framework.api.Command
+    META-INF/services/me.asu.tui.framework.api.CliCommand
 
 ** 更好的选择
 1. 本项目编译成可执行程序，

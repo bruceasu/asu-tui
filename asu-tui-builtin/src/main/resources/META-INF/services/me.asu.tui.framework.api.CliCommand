@@ -1,0 +1,9 @@
+me.asu.tui.framework.command.HelpCmd
+me.asu.tui.framework.command.SysInfoCmd
+me.asu.tui.framework.command.EchoCmd
+me.asu.tui.framework.command.ExitCmd
+me.asu.tui.framework.command.KillCmd
+me.asu.tui.framework.command.GcCmd
+me.asu.tui.framework.command.HistoryCmd
+me.asu.tui.framework.command.JobsCmd
+me.asu.tui.framework.command.Native2asciiCmd
