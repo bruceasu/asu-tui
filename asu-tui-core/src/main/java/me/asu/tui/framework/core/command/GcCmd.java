@@ -1,16 +1,18 @@
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.util.HashMap;
 import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliContext;
-import me.asu.tui.framework.core.Jobs;
 
-public class JobsCmd implements CliCommand
+/**
+ * @author suk
+ */
+public class GcCmd implements CliCommand
 {
-    private static final String                NAMESPACE = "syscmd";
-    private static final String                CMD_NAME  = "jobs";
+    private static final String       NAMESPACE = "syscmd";
+    private static final String          CMD_NAME  = "gc";
     private              InnerDescriptor descriptor;
 
     @Override
@@ -22,7 +24,9 @@ public class JobsCmd implements CliCommand
     @Override
     public Object execute(CliContext ctx, String[] args)
     {
-        Jobs.getInstance().print(ctx.getCliConsole());
+        ctx.getCliConsole().printf("call System.gc() ... %n");
+        System.gc();
+        ctx.getCliConsole().printf("done! %n");
         return null;
     }
 
@@ -52,12 +56,12 @@ public class JobsCmd implements CliCommand
 
         @Override
         public String getDescription() {
-            return "Prints currently running background jobs.";
+            return "Run the garbage collector.";
         }
 
         @Override
         public String getUsage() {
-            return CliConfigurator.VALUE_LINE_SEP + "jobs" + CliConfigurator.VALUE_LINE_SEP;
+            return CliConfigurator.VALUE_LINE_SEP + "gc" + CliConfigurator.VALUE_LINE_SEP;
         }
 
         @Override
@@ -67,7 +71,4 @@ public class JobsCmd implements CliCommand
         }
 
     }
-
-
-
 }

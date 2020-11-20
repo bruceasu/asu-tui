@@ -255,8 +255,7 @@ public final class TextCliShell implements CliShell
                         }
                         // was command line handled.
                         if (!handled) {
-                            console.printf(
-                                    "%nCommand unhandled." +
+                            console.printf("%nCommand unhandled." +
                                             "%nNo controllers found to handle [%s].%n", line
                             );
                         }

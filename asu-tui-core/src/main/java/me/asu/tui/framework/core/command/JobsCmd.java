@@ -1,22 +1,16 @@
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.core.Jobs;
 
-/**
- * @author suk
- * @since 2018/8/17
- */
-public class CdCmd implements CliCommand
+public class JobsCmd implements CliCommand
 {
-    private static final   String          NAMESPACE = "syscmd";
-    private static final String          CMD_NAME  = "cd";
+    private static final String                NAMESPACE = "syscmd";
+    private static final String                CMD_NAME  = "jobs";
     private              InnerDescriptor descriptor;
 
     @Override
@@ -25,25 +19,10 @@ public class CdCmd implements CliCommand
         return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
     }
 
-
     @Override
     public Object execute(CliContext ctx, String[] args)
     {
-        if (args == null || args.length == 0 || "~".equalsIgnoreCase(args[0])) {
-            String home = System.getProperty("user.home");
-            System.setProperty("user.dir", home);
-        } else if ("..".equalsIgnoreCase(args[0])) {
-            Path path = Paths.get(".").toAbsolutePath();
-            String s = path.getParent().toString();
-            System.setProperty("user.dir", s);
-        } else {
-            Path path = Paths.get(args[0]).toAbsolutePath();
-            if (Files.isDirectory(path)) {
-                System.setProperty("user.dir", path.toString());
-            } else {
-                ctx.getCliConsole().printf("%s is not a directory.%n", args[0]);
-            }
-        }
+        Jobs.getInstance().print(ctx.getCliConsole());
         return null;
     }
 
@@ -73,12 +52,12 @@ public class CdCmd implements CliCommand
 
         @Override
         public String getDescription() {
-            return "Change directory.";
+            return "Prints currently running background jobs.";
         }
 
         @Override
         public String getUsage() {
-            return CliConfigurator.VALUE_LINE_SEP + "cd <folder>" + CliConfigurator.VALUE_LINE_SEP;
+            return CliConfigurator.VALUE_LINE_SEP + "jobs" + CliConfigurator.VALUE_LINE_SEP;
         }
 
         @Override
@@ -88,4 +67,7 @@ public class CdCmd implements CliCommand
         }
 
     }
+
+
+
 }

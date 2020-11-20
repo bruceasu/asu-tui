@@ -1,10 +1,6 @@
-package me.asu.tui.linuxtools;
+package me.asu.tui.framework.core;
 
-import io.spring.IResource;
-import io.spring.PathMatchingResourcePatternResolver;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,17 +11,16 @@ import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliContext;
 import me.asu.tui.framework.api.CliController;
 import me.asu.tui.framework.core.command.ShellWrapCmd;
-import me.asu.tui.framework.core.CmdCliController;
 
 /**
  * @author suk
  * @since 2018/8/17
  */
-public class LinuxToolsCmd implements CliCommand
+public class ScriptWrapController implements CliCommand
 {
 
     private static final String           NAMESPACE = "syscmd";
-    private static final String           CMD_NAME  = "linuxtool-wrap";
+    private static final String           CMD_NAME  = "script-wrap";
     private              InnerDescriptor  descriptor;
     private              Path             tmpDir;
     private              CmdCliController container = null;
@@ -66,72 +61,35 @@ public class LinuxToolsCmd implements CliCommand
         }
 
         try {
-            // extract exe
-            boolean extracted = extractExecutablePrograms();
-            if (extracted) {
-                Files.list(tmpDir).forEach(p -> {
+            String appHomeDir = ctx.getConfigurator().getAppHomeDir();
+            Path dir = Paths.get(appHomeDir, "script");
+            if (Files.isDirectory(dir)) {
+                Files.list(dir).forEach(p -> {
                     Path fileName = p.getFileName();
                     String s = fileName.toString();
-                    String baseName = s.substring(0, s.length() - 4);
-                    String ext = s.substring(s.length() - 4);
-                    if (!".exe".equalsIgnoreCase(ext)) {
-                        return;
+                    String baseName = s;
+                    int i = s.lastIndexOf(".");
+                    if (i != -1) {
+                        baseName = s.substring(0, i);
                     }
-                    ShellWrapCmd cmd = new ShellWrapCmd()
-                    {{
-                        setName(baseName);
-                        if ("vim".equalsIgnoreCase(baseName)) {
-                            addCommand("start", p.toAbsolutePath().toString());
-                        } else {
-                            addCommand(p.toAbsolutePath().toString());
-                        }
 
-                        setDescription(baseName);
-                        setUsage(baseName);
+                    ShellWrapCmd cmd = new ShellWrapCmd();
+                    {{
+                        cmd.addCommand(p.toAbsolutePath().toString());
+                        cmd.setDescription(baseName);
+                        cmd.setUsage(baseName);
                     }};
                     container.addCommand(baseName, cmd, false);
                 });
 
+            } else {
+                plug.getCliConsole().printf("%s is not found. Do not load scripts.%n", dir);
             }
         } catch (IOException e) {
             plug.getCliConsole().printf("%s%n", e.getMessage());
         }
     }
 
-    private boolean extractExecutablePrograms() throws IOException
-    {
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
-                LinuxToolsCmd.class.getClassLoader());
-        IResource[] resources = resolver.getResources("classpath*:/linux/*");
-        if (resources != null) {
-            tmpDir = Files.createTempDirectory("linuxtools");
-            for (IResource resource : resources) {
-                //ctx.getCliConsole().printf("Found %s.%n", resource);
-                try (InputStream inputStream = resource.getInputStream()) {
-                    String filename = resource.getFilename();
-                    Path path = Paths.get(tmpDir.toAbsolutePath().toString(), filename);
-                    byte[] bytes = readBytes(inputStream);
-                    Files.write(path, bytes);
-                }
-            }
-            return true;
-        } else {
-            //ctx.getCliConsole().printf("Not found linux programs. %n");
-            return false;
-        }
-    }
-
-    private byte[] readBytes(InputStream ins) throws IOException
-    {
-        ByteArrayOutputStream b=  new ByteArrayOutputStream();
-        byte[] buffer = new byte[8096];
-        int read = 0;
-        while((read = ins.read(buffer)) >0 ) {
-            b.write(buffer, 0, read);
-        }
-
-        return b.toByteArray();
-    }
 
     @Override
     public void unplug(CliContext plug)
@@ -150,7 +108,7 @@ public class LinuxToolsCmd implements CliCommand
         }
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor
+    private class InnerDescriptor implements Descriptor
     {
 
         @Override
@@ -168,7 +126,7 @@ public class LinuxToolsCmd implements CliCommand
         @Override
         public String getDescription()
         {
-            return "Wrap linux tools for windows";
+            return "Wrap script";
         }
 
         @Override

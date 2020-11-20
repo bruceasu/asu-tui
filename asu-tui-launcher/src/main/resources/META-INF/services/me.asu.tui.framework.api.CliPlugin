@@ -1,3 +1,5 @@
 me.asu.tui.framework.core.CmdCliController
+me.asu.tui.framework.core.JsWrapController
+me.asu.tui.framework.core.ScriptWrapController
 me.asu.tui.framework.core.HistoryCliController
 me.asu.tui.framework.core.TextCliSplashScreen

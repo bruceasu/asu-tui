@@ -1,18 +1,20 @@
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.util.HashMap;
 import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliConfigurator;
+import me.asu.tui.framework.api.CliConsole;
 import me.asu.tui.framework.api.CliContext;
-import me.asu.tui.framework.core.Jobs;
+import me.asu.tui.framework.core.History;
 
-public class KillCmd implements CliCommand
+public class HistoryCmd implements CliCommand
 {
 
     private static final String          NAMESPACE = "syscmd";
-    private static final String          CMD_NAME  = "killjob";
+    private static final String          CMD_NAME  = "history";
     private              InnerDescriptor descriptor;
+
 
     @Override
     public Descriptor getDescriptor()
@@ -20,15 +22,19 @@ public class KillCmd implements CliCommand
         return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
     }
 
-
     @Override
     public Object execute(CliContext ctx, String[] args)
     {
-        int[] jobIds = new int[args.length];
-        for (int i = 0; i < args.length; i++) {
-            jobIds[i] = Integer.parseInt(args[i]);
+        CliConsole console = ctx.getCliConsole();
+        console.printf("==================================================%n");
+        console.printf("History：%n");
+        console.printf("--------------------------------------------------%n");
+        if (args == null || args.length == 0) {
+            History.printLast(0, console);
+        } else {
+            History.printLast(Integer.parseInt(args[0]), console);
         }
-        Jobs.getInstance().kill(jobIds);
+        console.printf("--------------------------------------------------%n");
         return null;
     }
 
@@ -62,15 +68,16 @@ public class KillCmd implements CliCommand
         @Override
         public String getDescription()
         {
-            return "Terminates execution of the specified jobs.\n"
-                    + "\t\tThe job numbers are obtained by running the jobs Cmd.";
+            return "Prints the last n commands. If n is omitted,\n"
+                    + "\t\tall recorded commands are printed. In both cases,\n"
+                    + "\t\tthe number of commands printed is limited by the\n"
+                    + "\t\tvalue of asu.shell.history_size.";
         }
 
         @Override
         public String getUsage()
         {
-            return CliConfigurator.VALUE_LINE_SEP + "killjob <jobId>"
-                    + CliConfigurator.VALUE_LINE_SEP;
+            return CliConfigurator.VALUE_LINE_SEP + "history [n]" + CliConfigurator.VALUE_LINE_SEP;
         }
 
         @Override

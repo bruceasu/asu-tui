@@ -1,4 +1,4 @@
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -64,8 +64,8 @@ public class ShellWrapCmd implements CliCommand
             commands.add("cmd");
             commands.add("/c");
         } else {
-            // commands.add("bash");
-            // commands.add("-c");
+             commands.add("bash");
+             commands.add("-c");
         }
 
         // add real command

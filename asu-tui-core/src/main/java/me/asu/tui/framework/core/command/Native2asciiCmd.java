@@ -1,4 +1,4 @@
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.util.*;
 import me.asu.tui.framework.api.*;

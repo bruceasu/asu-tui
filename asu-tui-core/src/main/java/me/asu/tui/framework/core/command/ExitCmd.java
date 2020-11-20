@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.asu.tui.framework.command;
+package me.asu.tui.framework.core.command;
 
 import java.util.Collections;
 import java.util.Map;
