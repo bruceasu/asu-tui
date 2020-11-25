@@ -15,8 +15,12 @@
  */
 package me.asu.tui.framework.core.command;
 
-import java.util.*;
-import me.asu.tui.framework.api.*;
+import java.util.List;
+import java.util.Map;
+import me.asu.tui.framework.api.CliCommand;
+import me.asu.tui.framework.api.CliConsole;
+import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * This class implements the Help command.
@@ -32,22 +36,23 @@ public class HelpCmd implements CliCommand
 
     private static final String            NAMESPACE  = "syscmd";
     private static final String            CMD_NAME   = "help";
-    private              HelpCmdDescriptor descriptor = new HelpCmdDescriptor();
+    private static final HelpCmdDescriptor DESCRIPTOR = new HelpCmdDescriptor();
 
     @Override
-    public CliCommand.Descriptor getDescriptor() {
-        return descriptor;
+    public CliCommand.Descriptor getDescriptor()
+    {
+        return DESCRIPTOR;
     }
 
     /**
-     * Executes the Help command.
-     * The help command expects format 'help [command_name]'.
-     * If the optional command_name parameter is present, this class will
-     * display info about about the command.  If command_name is not present
-     * the Help command displays a list of help for all installed command.
+     * Executes the Help command. The help command expects format 'help [command_name]'. If the
+     * optional command_name parameter is present, this class will display info about about the
+     * command.  If command_name is not present the Help command displays a list of help for all
+     * installed command.
      */
     @Override
-    public Object execute(CliContext ctx, String[] args) {
+    public Object execute(CliContext ctx, String[] args)
+    {
         // if arg passed, display help for command matching arg.
         if (args != null && args.length > 0) {
             printCommandHelp(ctx, args[0].trim());
@@ -58,7 +63,8 @@ public class HelpCmd implements CliCommand
         return null;
     }
 
-    private void printCommandHelp(CliContext ctx, String cmdName) {
+    private void printCommandHelp(CliContext ctx, String cmdName)
+    {
         Map<String, CliCommand> commands = ctx.mapCommands(ctx.getCommands());
         if (commands != null) {
             CliCommand cmd = commands.get(cmdName.trim());
@@ -70,7 +76,8 @@ public class HelpCmd implements CliCommand
         }
     }
 
-    private void printAllHelp(CliContext ctx) {
+    private void printAllHelp(CliContext ctx)
+    {
         CliConsole c = ctx.getCliConsole();
         c.printf("%nAvailable Commands");
         c.printf("%n------------------");
@@ -81,67 +88,56 @@ public class HelpCmd implements CliCommand
         }
     }
 
-    private void printCommandHelp(CliContext ctx, CliCommand cmd) {
+    private void printCommandHelp(CliContext ctx, CliCommand cmd)
+    {
         if (cmd != null && cmd.getDescriptor() != null) {
             CliConsole io = ctx.getCliConsole();
-            io.printf("%n%s - %s%n", cmd.getDescriptor().getName(),
-                    cmd.getDescriptor().getDescription());
-            io.printf("Usage: %s", cmd.getDescriptor().getUsage());
-            printCommandParamsDetail(ctx, cmd);
+            cmd.getDescriptor().printUsage(io);
         } else {
             ctx.getCliConsole().printf("Unable to display help for command.%n");
         }
     }
 
-    private void printCommandParamsDetail(CliContext ctx, CliCommand cmd) {
-        CliCommand.Descriptor desc = cmd.getDescriptor();
-        if (desc == null || desc.getArguments() == null || desc.getArguments().isEmpty()) {
-            return;
-        }
-        CliConsole c = ctx.getCliConsole();
-        c.printf("%nOptions:");
-        c.printf("%n--------");
-        for (Map.Entry<String, String> entry : desc.getArguments().entrySet()) {
-            c.printf("%n%1$-25s\t%2$s", entry.getKey(), entry.getValue());
-        }
-    }
 
     @Override
-    public void plug(CliContext plug) {
+    public void plug(CliContext plug)
+    {
         // no plugin action needed
     }
 
     @Override
-    public void unplug(CliContext plug) {
+    public void unplug(CliContext plug)
+    {
         // nothing to do
     }
 
-    private class HelpCmdDescriptor implements CliCommand.Descriptor {
+    private static class HelpCmdDescriptor implements CliCommand.Descriptor
+    {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
 
         @Override
-        public String getNamespace() {
+        public String getNamespace()
+        {
             return NAMESPACE;
         }
 
         @Override
-        public String getName() {
+        public String getName()
+        {
             return CMD_NAME;
         }
 
         @Override
-        public String getDescription() {
-            return "Displays help information for available commands.";
+        public String getDescription()
+        {
+            return "Type 'help' or 'help [command_name]' to displays help information for available commands.";
         }
 
         @Override
-        public String getUsage() {
-            return "Type 'help' or 'help [command_name]' ";
-        }
-
-        @Override
-        public Map<String, String> getArguments() {
-            return Collections.emptyMap();
-
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
         }
     }
 

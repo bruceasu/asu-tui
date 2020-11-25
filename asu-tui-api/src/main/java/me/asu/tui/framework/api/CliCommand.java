@@ -1,6 +1,8 @@
 package me.asu.tui.framework.api;
 
 import java.util.*;
+import me.asu.tui.framework.util.CliArguments;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * The Command component is there to allow Controllers to delegate tasks.
@@ -34,58 +36,52 @@ public interface CliCommand extends CliPlugin
      * Implementation of this class should use JCommander (http://jcommander.org)
      * to implement command-line argument handlers.
      */
-    public static interface Descriptor {
+    interface Descriptor
+    {
         /**
          * The purpose of the namespace is to provide an identifier to group
          * command without relying on class name or other convoluted approaches
          * to group command.
          * @return the command's namespace
          */
-        String getNamespace();
+        default String getNamespace(){return "";}
         
         /**
          * Implementation of this method should return a simple string (with no spaces)
          * that identifies the action mapped to this command.
          * @return the name of the action mapped to this command.
          */
-        String getName();
+        default String getName() {return "";}
         
         /**
          * This method should return a descriptive text about the command 
          * it is attached to.
          * @return description
          */
-        String getDescription();
-        
-        
-        /**
-         * Implementation of this method should return helpful hint on how
-         * to use the associated command and further description of options that
-         * are supported by the command.
-         * @return usage
-         */
-        String getUsage();
-        
-        /**
-         * Use this method is to provide a map of the command arguments.
-         * @return Map&lt;String,String&gt; key is argument, value = description of arg.
-         */
-        Map<String,String> getArguments();
+        default String getDescription()
+        {
+            return "";
+        }
+
+        CliCmdLineParser getCliCmdLineParser();
+
+        default  CliArguments parse(String[] args)
+        {
+            CliCmdLineParser cliCmdLineParser = getCliCmdLineParser();
+            if (cliCmdLineParser != null) {
+                return cliCmdLineParser.parse(args);
+            } else {
+                return new CliArguments();
+            }
+        }
 
         default void printUsage(CliConsole c) {
-            String usage = getUsage();
-            c.printf("%s%n",usage);
-            Map<String, String> arguments = getArguments();
-            if (arguments != null && arguments.size() > 0) {
-                c.printf("%nOptions:");
-                c.printf("%n--------");
-                List<String> strings = new ArrayList<>(arguments.keySet());
-                strings.sort(Comparator.naturalOrder());
-                for (String key : strings) {
-                    c.printf("%n%1$-10s\t%2$s", key, arguments.get(key));
-                }
+            CliCmdLineParser cliCmdLineParser = getCliCmdLineParser();
+            if (cliCmdLineParser != null) {
+                String usage = cliCmdLineParser.usage(getName());
+                c.printf("%s%n%s%n", getDescription(), usage);
+                c.printf("%n");
             }
-            c.printf("%n");
         }
     }
 }

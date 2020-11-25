@@ -17,6 +17,7 @@ import lombok.Data;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
@@ -85,7 +86,7 @@ public class JsWrapCmd implements CliCommand
 
     private class InnerDescriptor implements Descriptor
     {
-
+        CliCmdLineParser parser = new CliCmdLineParser();
         @Override
         public String getNamespace()
         {
@@ -105,15 +106,9 @@ public class JsWrapCmd implements CliCommand
         }
 
         @Override
-        public String getUsage()
+        public CliCmdLineParser getCliCmdLineParser()
         {
-            return usage;
-        }
-
-        @Override
-        public Map<String, String> getArguments()
-        {
-            return arguments;
+            return parser;
         }
     }
 }

@@ -36,7 +36,11 @@ public class CliCmdLineParser
                     CliCmdLineOption opt = options.get(j);
                     String shortName = opt.getShortName();
                     String longName = opt.getLongName();
-                    if (arg.equals("-" + shortName) || arg.equals("--" + longName)) {
+                    boolean matchLongName =
+                            longName != null && !longName.isEmpty() && arg.equals("--" + longName);
+                    boolean matchShortName = shortName != null && !shortName.isEmpty() && arg.equals(
+                            "-" + shortName);
+                    if (matchShortName || matchLongName) {
                         found = true;
                         if (opt.isHasArg()) {
                             i++;
@@ -62,6 +66,7 @@ public class CliCmdLineParser
         if (program != null) {
             builder.append(program).append("\n");
         }
+
         if (!options.isEmpty()) {
             options.forEach(opt -> {
                 String shortName = opt.getShortName();
@@ -80,6 +85,7 @@ public class CliCmdLineParser
                 if (desc != null && !desc.isEmpty()) {
                     builder.append("\t").append(desc);
                 }
+                builder.append("\n");
             });
 
         }

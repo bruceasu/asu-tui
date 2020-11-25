@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import lombok.Data;
 import me.asu.tui.framework.api.*;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
@@ -170,6 +171,8 @@ public class ShellWrapCmd implements CliCommand
 
     private class ShellCmdDescriptor implements CliCommand.Descriptor {
 
+        CliCmdLineParser parser = new CliCmdLineParser();
+
         @Override
         public String getNamespace() {
             return NAMESPACE;
@@ -186,13 +189,9 @@ public class ShellWrapCmd implements CliCommand
         }
 
         @Override
-        public String getUsage() {
-            return usage;
-        }
-
-        @Override
-        public Map<String, String> getArguments() {
-            return arguments;
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
         }
     }
 }

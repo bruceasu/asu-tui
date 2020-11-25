@@ -3,11 +3,9 @@ package me.asu.tui.framework.core.command;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
-import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
@@ -15,14 +13,15 @@ import me.asu.tui.framework.api.CliContext;
  */
 public class CdCmd implements CliCommand
 {
-    private static final   String          NAMESPACE = "syscmd";
-    private static final String          CMD_NAME  = "cd";
-    private              InnerDescriptor descriptor;
+
+    private static final String          NAMESPACE = "syscmd";
+    private static final String                       CMD_NAME  = "cd";
+    private static final              InnerDescriptor DESCRIPTOR = new InnerDescriptor();
 
     @Override
     public Descriptor getDescriptor()
     {
-        return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
+        return DESCRIPTOR;
     }
 
 
@@ -59,33 +58,33 @@ public class CdCmd implements CliCommand
 
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor {
+    private static class InnerDescriptor implements CliCommand.Descriptor
+    {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
 
         @Override
-        public String getNamespace() {
+        public String getNamespace()
+        {
             return NAMESPACE;
         }
 
         @Override
-        public String getName() {
+        public String getName()
+        {
             return CMD_NAME;
         }
 
         @Override
-        public String getDescription() {
-            return "Change directory.";
+        public String getDescription()
+        {
+            return "cd <dir> Change directory.";
         }
 
         @Override
-        public String getUsage() {
-            return CliConfigurator.VALUE_LINE_SEP + "cd <folder>" + CliConfigurator.VALUE_LINE_SEP;
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments() {
-            Map<String, String> result = new HashMap<>();
-            return result;
-        }
-
     }
 }

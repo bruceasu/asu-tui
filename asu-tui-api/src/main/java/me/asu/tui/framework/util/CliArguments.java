@@ -9,7 +9,7 @@ import lombok.ToString;
 public class CliArguments
 {
 
-    final static CliCmdLineOption UNKNOWN_OPT= new CliCmdLineOption();
+    final static CliCmdLineOption UNKNOWN_OPT= CliCmdLineOption.builder().build();
     final List<String>              remain = new ArrayList<>();
     final Map<CliCmdLineOption, List<String>> params = new HashMap<>();
     final List<CliCmdLineOption> options = new ArrayList<>();

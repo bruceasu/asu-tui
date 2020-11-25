@@ -1,25 +1,23 @@
 package me.asu.tui.framework.core.command;
 
-import java.util.HashMap;
-import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
-import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliConsole;
 import me.asu.tui.framework.api.CliContext;
 import me.asu.tui.framework.core.History;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 public class HistoryCmd implements CliCommand
 {
 
     private static final String          NAMESPACE = "syscmd";
-    private static final String          CMD_NAME  = "history";
-    private              InnerDescriptor descriptor;
+    private static final String                       CMD_NAME   = "history";
+    private  static final             InnerDescriptor DESCRIPTOR = new InnerDescriptor();
 
 
     @Override
     public Descriptor getDescriptor()
     {
-        return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
+        return DESCRIPTOR;
     }
 
     @Override
@@ -50,8 +48,9 @@ public class HistoryCmd implements CliCommand
 
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor
+    private static class InnerDescriptor implements CliCommand.Descriptor
     {
+        CliCmdLineParser parser = new CliCmdLineParser();
 
         @Override
         public String getNamespace()
@@ -68,24 +67,16 @@ public class HistoryCmd implements CliCommand
         @Override
         public String getDescription()
         {
-            return "Prints the last n commands. If n is omitted,\n"
+            return "history [n] prints the last n commands. If n is omitted,\n"
                     + "\t\tall recorded commands are printed. In both cases,\n"
                     + "\t\tthe number of commands printed is limited by the\n"
                     + "\t\tvalue of asu.shell.history_size.";
         }
 
         @Override
-        public String getUsage()
+        public CliCmdLineParser getCliCmdLineParser()
         {
-            return CliConfigurator.VALUE_LINE_SEP + "history [n]" + CliConfigurator.VALUE_LINE_SEP;
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments()
-        {
-            Map<String, String> result = new HashMap<>();
-            return result;
-        }
-
     }
 }

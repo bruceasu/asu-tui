@@ -16,62 +16,76 @@
 
 package me.asu.tui.framework.core.command;
 
-import java.util.Collections;
-import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
- * This class responds to the the "exit" command
- * action
+ * This class responds to the the "exit" command action
+ *
  * @author vvivien
  */
 public class ExitCmd implements CliCommand
 {
-    private static final String NAMESPACE = "syscmd";
-    private static final String ACTION_NAME = "exit";
+
+    private static final String                NAMESPACE   = "syscmd";
+    private static final String                ACTION_NAME = "exit";
+    private static final CliCommand.Descriptor DESCRIPTOR  = new InnerDescriptor();
 
     @Override
-    public Object execute(CliContext ctx, String[] args) {
+    public Object execute(CliContext ctx, String[] args)
+    {
         System.exit(0);
         return null;
     }
 
     @Override
-    public void plug(CliContext plug) {
+    public void plug(CliContext plug)
+    {
         // nothing to setup
     }
-    
+
     @Override
-    public void unplug(CliContext plug) {
+    public void unplug(CliContext plug)
+    {
         // nothing to tear down
     }
-    
+
     @Override
-    public CliCommand.Descriptor getDescriptor(){
-        return new CliCommand.Descriptor() {
-            @Override public String getNamespace() {return NAMESPACE;}
-            
-            @Override
-            public String getName() {
-                return ACTION_NAME;
-            }
-
-            @Override
-            public String getDescription() {
-               return "Exits ClamShell.";
-            }
-
-            @Override
-            public String getUsage() {
-                return "Type 'exit'";
-            }
-
-            @Override
-            public Map<String, String> getArguments() {
-                return Collections.emptyMap();
-            }
-        };
+    public CliCommand.Descriptor getDescriptor()
+    {
+        return DESCRIPTOR;
     }
-    
+
+    static class InnerDescriptor implements CliCommand.Descriptor
+    {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
+
+        @Override
+        public String getNamespace()
+        {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getName()
+        {
+            return ACTION_NAME;
+        }
+
+        @Override
+        public String getDescription()
+        {
+            return "Type 'exit' to exits ClamShell.";
+        }
+
+        @Override
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
+        }
+    }
+
+    ;
 }

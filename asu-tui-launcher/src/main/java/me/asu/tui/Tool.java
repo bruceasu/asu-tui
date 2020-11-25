@@ -28,6 +28,8 @@ public class Tool
         CliContext context = CliRuntime.getContext();
         CliShell shell;
         try {
+            String debug = (String)context.getConfigurator().getProperty("debug", "false");
+            context.setDebug(Boolean.parseBoolean(debug));
             shell = new TextCliShell();
             context.setShell(shell);
             if (args != null && args.length > 0) {

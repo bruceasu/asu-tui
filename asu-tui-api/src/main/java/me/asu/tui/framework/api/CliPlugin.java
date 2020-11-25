@@ -12,12 +12,12 @@ public interface CliPlugin
      * by the clam container.
      * @param plug the global context for component.
      */
-    public void plug(CliContext plug);
+    default void plug(CliContext plug){}
     
     /**
      * This is the exit point when components are done during lifecycle of the
      * clamshell container.
      * @param plug context
      */
-    public void unplug(CliContext plug);
+    default void unplug(CliContext plug){}
 }

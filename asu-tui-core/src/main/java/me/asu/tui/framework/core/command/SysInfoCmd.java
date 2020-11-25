@@ -15,15 +15,21 @@
  */
 package me.asu.tui.framework.core.command;
 
-import java.lang.management.*;
-import java.util.HashMap;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.util.Map;
 import java.util.Map.Entry;
-import me.asu.tui.framework.api.*;
+import me.asu.tui.framework.api.CliCommand;
+import me.asu.tui.framework.api.CliConsole;
+import me.asu.tui.framework.api.CliContext;
+import me.asu.tui.framework.util.CliArguments;
+import me.asu.tui.framework.util.CliCmdLineOption;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
- * This is a Command implementation that returns runtime system information.
- * The implemented command has the command-line format of:
+ * This is a Command implementation that returns runtime system information. The implemented command
+ * has the command-line format of:
  * <pre>
  * sysinfo [options] [option params]
  * </pre>
@@ -38,86 +44,74 @@ import me.asu.tui.framework.api.*;
 public class SysInfoCmd implements CliCommand
 {
 
-    private static final String NAMESPACE = "syscmd";
-    private static final String CMD_NAME  = "sysinfo";
-    private SysInfoDescriptor descriptor;
+    private static final String            NAMESPACE  = "syscmd";
+    private static final String            CMD_NAME   = "sysinfo";
+    private static final SysInfoDescriptor DESCRIPTOR = new SysInfoDescriptor();
 
     @Override
-    public Descriptor getDescriptor() {
-        return (descriptor != null) ? descriptor : (descriptor = new SysInfoDescriptor());
+    public Descriptor getDescriptor()
+    {
+        return DESCRIPTOR;
     }
 
     @Override
-    public Object execute(CliContext ctx,  String[] args) {
+    public Object execute(CliContext ctx, String[] args)
+    {
         CliConsole c = ctx.getCliConsole();
-        if (args != null && args.length > 0 && accept(args[0])) {
+        CliArguments arguments = DESCRIPTOR.parse(args);
+        boolean showHelp = true;
+        if (arguments.hasParam("p")) {
+            props( c);
+            showHelp = false;
+        }
+        if (arguments.hasParam("cp")) {
+            classpath(c);
+            showHelp = false;
+        }
 
-            // decipher args
+        if (arguments.hasParam("m")) {
+            mem(c);
+            showHelp = false;
+        }
 
-            // >sysinfo -props
-            props(args[0], c);
-
-            // >sysinfo -cp [or -classpath]
-            classpath(args[0], c);
-
-            // >sysinfo -mem
-            mem(args[0], c);
-
-
-        } else {
-            String usage = descriptor.getUsage();
-            c.printf("%s%n",usage);
-            Map<String, String> arguments = descriptor.getArguments();
-            if (arguments != null && arguments.size() > 0) {
-                c.printf("%nOptions:");
-                c.printf("%n--------");
-                for (Map.Entry<String, String> entry : arguments.entrySet()) {
-                    c.printf("%n%1$-10s\t%2$s", entry.getKey(), entry.getValue());
-                }
-            }
-            c.printf("%n");
+        if(arguments.hasParam("h")||showHelp) {
+            DESCRIPTOR.printUsage(c);
         }
 
         return null;
     }
 
 
-    private boolean accept(String arg) {
-        return descriptor.getArguments().keySet().contains(arg);
+    private void mem(CliConsole c)
+    {
+        MemoryMXBean bean = ManagementFactory.getMemoryMXBean();
+        c.printf("%nHeap Memory Usage:%n");
+        c.printf("\t-Initial: %d%n", bean.getHeapMemoryUsage().getInit());
+        c.printf("\t-Max: %d%n", bean.getHeapMemoryUsage().getMax());
+        c.printf("\t-Committed: %d%n", bean.getHeapMemoryUsage().getCommitted());
+        c.printf("\t-Used: %d", bean.getHeapMemoryUsage().getUsed());
+        c.printf("%n%n");
     }
 
-    private void mem(String arg, CliConsole c) {
-        if ("-mem".equals(arg)) {
-            MemoryMXBean bean = ManagementFactory.getMemoryMXBean();
-            c.printf("%nHeap Memory Usage:%n");
-            c.printf("\t-Initial: %d%n", bean.getHeapMemoryUsage().getInit());
-            c.printf("\t-Max: %d%n", bean.getHeapMemoryUsage().getMax());
-            c.printf("\t-Committed: %d%n", bean.getHeapMemoryUsage().getCommitted());
-            c.printf("\t-Used: %d", bean.getHeapMemoryUsage().getUsed());
-            c.printf("%n%n");
+    private void classpath(CliConsole c)
+    {
+        RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+        c.printf("%nClasspath: %s", bean.getClassPath());
+        c.printf("%nBoot Classpath: %s%n%n", bean.getBootClassPath());
+    }
+
+    private void props(CliConsole c)
+    {
+        c.printf("%nSystem Properties");
+        c.printf("%n-----------------");
+        for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+            displaySystemProperty(c, (String) entry.getKey());
         }
+        c.printf("%n%n");
     }
 
-    private void classpath(String arg, CliConsole c) {
-        if ("-cp".equals(arg)) {
-            RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-            c.printf("%nClasspath: %s", bean.getClassPath());
-            c.printf("%nBoot Classpath: %s%n%n", bean.getBootClassPath());
-        }
-    }
-
-    private void props(String arg, CliConsole c) {
-        if ("-props".equals(arg)) {
-            c.printf("%nSystem Properties");
-            c.printf("%n-----------------");
-            for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
-                displaySystemProperty(c, (String) entry.getKey());
-            }
-            c.printf("%n%n");
-        }
-    }
-
-    private void displaySystemProperty(CliConsole c, String propName) {
+    private void displaySystemProperty(CliConsole c, String propName)
+    {
         if (propName == null || propName.isEmpty()) {
             c.printf("%n Property name is missing. Provide a property name.%n%n");
             return;
@@ -129,49 +123,75 @@ public class SysInfoCmd implements CliCommand
     }
 
     @Override
-    public void plug(CliContext plug) {
+    public void plug(CliContext plug)
+    {
         //descriptor = new SysInfoDescriptor();
     }
 
     @Override
-    public void unplug(CliContext plug) {
+    public void unplug(CliContext plug)
+    {
         // nothing to do
     }
 
-    private class SysInfoDescriptor implements CliCommand.Descriptor {
+    static class SysInfoDescriptor implements CliCommand.Descriptor
+    {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
+
+        SysInfoDescriptor()
+        {
+            CliCmdLineOption opt1 = CliCmdLineOption.builder()
+                                                    .shortName("p")
+                                                    .longName("props")
+                                                    .description(
+                                                            "Displays the JVM's system properties.")
+                                                    .build();
+            CliCmdLineOption opt2 = CliCmdLineOption.builder()
+                                                    .shortName("cp")
+                                                    .longName("classpath")
+                                                    .description(
+                                                            "Displays JVM classpath information.")
+                                                    .build();
+            CliCmdLineOption opt3 = CliCmdLineOption.builder()
+                                                    .shortName("m")
+                                                    .longName("mem")
+                                                    .description(
+                                                            "Displays memory inforamtion about current JVM.")
+                                                    .build();
+            CliCmdLineOption opt4 = CliCmdLineOption.builder()
+                                                    .shortName("h")
+                                                    .longName("help")
+                                                    .description(
+                                                            "Print help message.")
+                                                    .build();
+            this.parser.addOption(opt1, opt2, opt3, opt4);
+        }
 
         @Override
-        public String getNamespace() {
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
+        }
+
+        @Override
+        public String getNamespace()
+        {
             return NAMESPACE;
         }
 
         @Override
-        public String getName() {
+        public String getName()
+        {
             return CMD_NAME;
         }
 
         @Override
-        public String getDescription() {
+        public String getDescription()
+        {
             return "Displays current JVM runtime information.";
         }
 
-        @Override
-        public String getUsage() {
-            StringBuilder result = new StringBuilder();
-            result.append(CliConfigurator.VALUE_LINE_SEP).append("sysinfo [options]")
-                  .append(CliConfigurator.VALUE_LINE_SEP);
-
-            return result.toString();
-        }
-
-        @Override
-        public Map<String, String> getArguments() {
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("-props", "Displays the JVM's system properties.");
-            result.put("-cp", "Displays JVM classpath information.");
-            result.put("-mem", "Displays memory inforamtion about current JVM.");
-            return result;
-        }
 
     }
 

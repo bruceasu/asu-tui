@@ -16,6 +16,7 @@ import me.asu.tui.framework.api.CliContext;
 import me.asu.tui.framework.api.CliController;
 import me.asu.tui.framework.core.command.ShellWrapCmd;
 import me.asu.tui.framework.core.CmdCliController;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
@@ -150,9 +151,9 @@ public class LinuxToolsCmd implements CliCommand
         }
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor
+    private static class InnerDescriptor implements CliCommand.Descriptor
     {
-
+        CliCmdLineParser parser = new CliCmdLineParser();
         @Override
         public String getNamespace()
         {
@@ -172,18 +173,10 @@ public class LinuxToolsCmd implements CliCommand
         }
 
         @Override
-        public String getUsage()
+        public CliCmdLineParser getCliCmdLineParser()
         {
-            return "";
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments()
-        {
-            Map<String, String> result = new HashMap<>();
-            return result;
-        }
-
     }
 
 

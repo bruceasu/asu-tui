@@ -1,23 +1,21 @@
 package me.asu.tui.framework.core.command;
 
-import java.util.HashMap;
-import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
-import me.asu.tui.framework.api.CliConfigurator;
 import me.asu.tui.framework.api.CliContext;
 import me.asu.tui.framework.core.Jobs;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 public class KillCmd implements CliCommand
 {
 
-    private static final String          NAMESPACE = "syscmd";
-    private static final String          CMD_NAME  = "killjob";
-    private              InnerDescriptor descriptor;
+    private static final String          NAMESPACE  = "syscmd";
+    private static final String          CMD_NAME   = "killjob";
+    private static final InnerDescriptor DESCRIPTOR = new InnerDescriptor();
 
     @Override
     public Descriptor getDescriptor()
     {
-        return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
+        return DESCRIPTOR;
     }
 
 
@@ -44,8 +42,10 @@ public class KillCmd implements CliCommand
 
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor
+    private static class InnerDescriptor implements CliCommand.Descriptor
     {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
 
         @Override
         public String getNamespace()
@@ -62,23 +62,14 @@ public class KillCmd implements CliCommand
         @Override
         public String getDescription()
         {
-            return "Terminates execution of the specified jobs.\n"
+            return getName() + " <jobId> to terminates execution of the specified jobs.\n"
                     + "\t\tThe job numbers are obtained by running the jobs Cmd.";
         }
 
         @Override
-        public String getUsage()
+        public CliCmdLineParser getCliCmdLineParser()
         {
-            return CliConfigurator.VALUE_LINE_SEP + "killjob <jobId>"
-                    + CliConfigurator.VALUE_LINE_SEP;
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments()
-        {
-            Map<String, String> result = new HashMap<>();
-            return result;
-        }
-
     }
 }

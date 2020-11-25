@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import me.asu.tui.framework.api.CliCommand;
 import me.asu.tui.framework.api.CliContext;
 import me.asu.tui.framework.api.CliController;
 import me.asu.tui.framework.core.command.ShellWrapCmd;
+import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
@@ -74,11 +73,14 @@ public class ScriptWrapController implements CliCommand
                     }
 
                     ShellWrapCmd cmd = new ShellWrapCmd();
-                    {{
-                        cmd.addCommand(p.toAbsolutePath().toString());
-                        cmd.setDescription(baseName);
-                        cmd.setUsage(baseName);
-                    }};
+                    {
+                        {
+                            cmd.addCommand(p.toAbsolutePath().toString());
+                            cmd.setDescription(baseName);
+                            cmd.setUsage(baseName);
+                        }
+                    }
+                    ;
                     container.addCommand(baseName, cmd, false);
                 });
 
@@ -95,7 +97,7 @@ public class ScriptWrapController implements CliCommand
     public void unplug(CliContext plug)
     {
         try {
-            Files.list(tmpDir).forEach(p-> {
+            Files.list(tmpDir).forEach(p -> {
                 try {
                     Files.deleteIfExists(p);
                 } catch (IOException e) {
@@ -110,6 +112,8 @@ public class ScriptWrapController implements CliCommand
 
     private class InnerDescriptor implements Descriptor
     {
+
+        CliCmdLineParser parser = new CliCmdLineParser();
 
         @Override
         public String getNamespace()
@@ -130,18 +134,10 @@ public class ScriptWrapController implements CliCommand
         }
 
         @Override
-        public String getUsage()
+        public CliCmdLineParser getCliCmdLineParser()
         {
-            return "";
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments()
-        {
-            Map<String, String> result = new HashMap<>();
-            return result;
-        }
-
     }
 
 

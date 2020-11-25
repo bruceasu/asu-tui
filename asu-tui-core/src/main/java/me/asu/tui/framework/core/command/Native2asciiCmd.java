@@ -13,15 +13,15 @@ import me.asu.tui.framework.util.CliCmdLineParser;
 public class Native2asciiCmd implements CliCommand
 {
     private static final String       NAMESPACE = "syscmd";
-    private static final String                CMD_NAME  = "native2ascii";
-    private              InnerDescriptor descriptor;
+    private static final String                        CMD_NAME   = "native2ascii";
+    private    static final            InnerDescriptor DESCRIPTOR = new InnerDescriptor();
 
     CliCmdLineParser parser = new CliCmdLineParser();
 
     @Override
     public Descriptor getDescriptor()
     {
-        return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
+        return DESCRIPTOR;
     }
 
     @Override
@@ -31,18 +31,18 @@ public class Native2asciiCmd implements CliCommand
         CliConsole console = ctx.getCliConsole();
         try {
             if (args == null || args.length == 0) {
-                console.printf("%s", descriptor.getUsage());
+                DESCRIPTOR.printUsage(console);
                 return null;
             }
             CliArguments arguments = parser.parse(args);
             if (arguments.hasParam("h") ) {
-                console.printf("%s", descriptor.getUsage());
+                DESCRIPTOR.printUsage(console);
             } else if (arguments.hasParam("r") && arguments.hasParam("s")) {
                 unescape(console, arguments);
             } else if (arguments.hasParam("s")) {
                 escape(console, arguments);
             } else {
-                console.printf("%s%n", descriptor.getUsage());
+                DESCRIPTOR.printUsage(console);
             }
 
         } catch (Exception e) {
@@ -111,23 +111,6 @@ public class Native2asciiCmd implements CliCommand
     public void plug(CliContext plug)
     {
 
-        CliCmdLineOption helpFlag = new CliCmdLineOption();
-        helpFlag.setShortName("h");
-        helpFlag.setLongName("help");
-        helpFlag.setDescription("Print help message.");
-
-        CliCmdLineOption reversalFlag = new CliCmdLineOption();
-        reversalFlag.setShortName("r");
-        reversalFlag.setLongName("reversal");
-        reversalFlag.setDescription("Reversal, unescape.");
-
-        CliCmdLineOption sourceFlag = new CliCmdLineOption();
-        sourceFlag.setShortName("s");
-        sourceFlag.setLongName("source");
-        sourceFlag.setDescription("Source text.");
-
-
-        parser.addOption(helpFlag, reversalFlag, sourceFlag);
     }
 
     @Override
@@ -136,7 +119,16 @@ public class Native2asciiCmd implements CliCommand
 
     }
 
-    private class InnerDescriptor implements CliCommand.Descriptor {
+    static class InnerDescriptor implements CliCommand.Descriptor {
+        private CliCmdLineParser parser = new CliCmdLineParser();
+
+        public InnerDescriptor()
+        {
+            CliCmdLineOption opt1 = CliCmdLineOption.builder().shortName("h").longName("help").description("Print the help").build();
+            CliCmdLineOption opt2 = CliCmdLineOption.builder().shortName("s").longName("source").description("Source Text").hasArg(true).build();
+            CliCmdLineOption opt3 = CliCmdLineOption.builder().shortName("r").longName("revert").description("Reversal").build();
+            this.parser.addOption(opt1, opt2, opt3);
+        }
 
         @Override
         public String getNamespace() {
@@ -154,23 +146,10 @@ public class Native2asciiCmd implements CliCommand
         }
 
         @Override
-        public String getUsage() {
-            return parser.usage(CliConfigurator.VALUE_LINE_SEP + "native2ascii [options] " + CliConfigurator.VALUE_LINE_SEP);
+        public CliCmdLineParser getCliCmdLineParser()
+        {
+            return parser;
         }
-
-        @Override
-        public Map<String, String> getArguments() {
-            Map<String, String> result = new HashMap<>();
-            result.put("-h", "Print the help");
-            result.put("-s <source>", "Source Text");
-            result.put("-r", "Reversal");
-            return result;
-        }
-
     }
-
-
-
-
 
 }
