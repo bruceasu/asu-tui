@@ -2,14 +2,17 @@
 一个命令行工具框架
 
 ** 主类
-   me.asu.tui.Tool
+   me.asu.tui.Launcher
 
 ** 如何实现自己的命令
 
-*** 编写一个实现 =me.asu.tui.framework.api.CliCommand= 接口的类
-
-*** 添加到类名到 =services=
+*** 方法1:
+1. 编写一个实现 =me.asu.tui.framework.api.CliCommand= 接口的类
+2. 添加到类名到 =services=
     META-INF/services/me.asu.tui.framework.api.CliCommand
+*** 方法2:
+1. 编写一个实现 =me.asu.tui.framework.api.CliCommand= 接口的类
+2. 编写一个plugin.properties文件.
 
 ** 更好的选择
 1. 本项目编译成可执行程序，
@@ -20,6 +23,24 @@
 |-- cli
 |-- cli.cmd
 |-- asu-tui-1.0.0-SNAPSHOT.jar
-|-- plugins    插件目录
-\-- lib        依赖目录
+|-- plugins/               # 插件目录
+│    ├── user/             # 插件 user
+│    │   ├── plugin.properties
+│    │   ├── user.jar
+│    │   ├── lib/          # 插件私有依赖
+│    │   └── classes/      # 插件class目录（或直接打包成 jar）
+│    └── order.jar         # 另一种形式：单文件插件, 内含 plugin.properties
+│
+\-- lib/                   # 依赖目录, 公共依赖
+│   └── jline-3.x.jar
+#+END_EXAMPLE
+
+
+plugin.properties
+#+BEGIN_EXAMPLE
+name=user
+version=1.0.0
+main-class=com.mycli.plugin.user.UserPlugin
+description=User management commands
+command=user
 #+END_EXAMPLE

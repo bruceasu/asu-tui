@@ -5,9 +5,9 @@
 if "%OS%"=="Windows_NT" setlocal
 
 set APP_HOME=%~dp0
-set VERSION=1.0.0-SNAPSHOT
-set APP_NAME=asu-tui
-set JAR=%APP_NAME%-%VERSION%.jar
+set VERSION=1.2.0-SNAPSHOT
+set APP_NAME=asu-tui-launcher
+set JAR=%APP_NAME%.jar
 set MAIN_CLASS=
 set APP_CONF_DIR=%APP_HOME%
 set APP_ARGS=

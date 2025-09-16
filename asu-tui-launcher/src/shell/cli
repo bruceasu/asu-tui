@@ -32,9 +32,9 @@ function get_abs_dir() {
 }
 
 APP_HOME=`get_abs_dir`
-VERSION=1.0.0-SNAPSHOT
-APP_NAME=asu-tui
-JAR=${APP_NAME}-${VERSION}.jar
+VERSION=1.2.0-SNAPSHOT
+APP_NAME=asu-tui-launcher
+JAR=${APP_NAME}.jar
 JAVA_OPTS=-Dapp.home=${APP_HOME}
 APP_ARGS=
 java ${JAVA_OPTS} -jar ${APP_HOME}/${JAR} ${APP_ARGS} $*

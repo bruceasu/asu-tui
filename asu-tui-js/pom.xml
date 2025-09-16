@@ -1,0 +1,159 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.asu</groupId>
+    <artifactId>asu-tui-js</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>asu-tui-js</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <!-- 编译参数 -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.2.7</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>me.asu</groupId>
+            <artifactId>asu-tui-api</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <scope>provided</scope>
+        </dependency>
+<!-- jdk15+ javascript support 版本要跟JDK匹配 -->
+<!--        &lt;!&ndash; GraalVM SDK &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.sdk</groupId>-->
+<!--            <artifactId>graal-sdk</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; GraalVM JavaScript &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.js</groupId>-->
+<!--            <artifactId>js</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; GraalVM JavaScript launcher support &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.js</groupId>-->
+<!--            <artifactId>js-scriptengine</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- lombok -->
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+            </plugin>
+            <!-- compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <!-- surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>${maven.test.skip}</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- lombok -->
+                <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <configuration>
+                        <encoding>utf-8</encoding>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>delombok</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- compiler -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <fork>true</fork>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <!-- surefire -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                </plugin>
+                <!-- jar -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>false</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                                <addClasspath>true</addClasspath>
+                                <!--							<classpathPrefix>lib/</classpathPrefix>-->
+                            </manifest>
+                            <manifestEntries>
+                                <Specification-Title>${project.artifactId}</Specification-Title>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Built-By>Asu</Built-By>
+                                <!-- <Class-Path>. lib/ext.jar</Class-Path>-->
+                            </manifestEntries>
+                        </archive>
+                        <!-- 由具体的项目自己指定 -->
+                        <!--<excludes>-->
+                        <!--<exclude>**/*.properties</exclude>-->
+                        <!--<exclude>**/*.xml</exclude>-->
+                        <!--<exclude>**/*.json</exclude>-->
+                        <!--<exclude>**/*.groovy</exclude>-->
+                        <!--<exclude>**/*.py</exclude>-->
+                        <!--<exclude>**/*.jar</exclude>-->
+                        <!--</excludes>-->
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
