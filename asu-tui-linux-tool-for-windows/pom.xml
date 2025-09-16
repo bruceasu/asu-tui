@@ -2,14 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>asu-tui</artifactId>
-        <groupId>me.asu</groupId>
-        <version>1.1.0-SNAPSHOT</version>
-    </parent>
+    <groupId>me.asu</groupId>
+    <version>1.2.0-SNAPSHOT</version>
+    <artifactId>asu-tui-linux-tool-for-windows</artifactId>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>asu-tui-linux-tool-for-windows</artifactId>
     <properties>
         <maven.test.skip>false</maven.test.skip>
     </properties>
@@ -17,14 +14,8 @@
         <dependency>
             <groupId>me.asu</groupId>
             <artifactId>asu-tui-api</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>me.asu</groupId>
-            <artifactId>asu-tui-core</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
 
     <build>

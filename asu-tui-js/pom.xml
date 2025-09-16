@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>me.asu</groupId>
+        <artifactId>asu-tui</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>asu-tui-js</artifactId>
+    <packaging>jar</packaging>
+
+    <name>asu-tui-js</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>me.asu</groupId>
+            <artifactId>asu-tui-api</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+<!-- jdk15+ javascript support 版本要跟JDK匹配 -->
+<!--        &lt;!&ndash; GraalVM SDK &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.sdk</groupId>-->
+<!--            <artifactId>graal-sdk</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; GraalVM JavaScript &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.js</groupId>-->
+<!--            <artifactId>js</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; GraalVM JavaScript launcher support &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.graalvm.js</groupId>-->
+<!--            <artifactId>js-scriptengine</artifactId>-->
+<!--            <version>23.0.0</version>-->
+<!--        </dependency>-->
+    </dependencies>
+</project>

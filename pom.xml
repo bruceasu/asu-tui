@@ -7,12 +7,11 @@
     <groupId>me.asu</groupId>
     <artifactId>asu-tui</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <modules>
         <module>asu-tui-api</module>
-        <module>asu-tui-core</module>
         <module>asu-tui-launcher</module>
-        <module>asu-tui-linux-tool-for-windows</module>
+        <module>asu-tui-script</module>
     </modules>
     <properties>
         <!-- 编译参数 -->
@@ -24,13 +23,6 @@
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
     <dependencies>
-        <!--<dependency>-->
-        <!--<groupId>com.alee.laf</groupId>-->
-        <!--<artifactId>weblaf-complete</artifactId>-->
-        <!--<version>1.29</version>-->
-        <!--<scope>system</scope>-->
-        <!--<systemPath>${basedir}/lib/weblaf-complete-1.29.jar</systemPath>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -127,7 +119,7 @@
                                 </addDefaultSpecificationEntries>
                                 <addClasspath>true</addClasspath>
                                 <!--							<classpathPrefix>lib/</classpathPrefix>-->
-                                <mainClass>me.asu.tui.Tool</mainClass>
+                                <mainClass>me.asu.tui.Launcher</mainClass>
                             </manifest>
                             <manifestEntries>
                                 <Specification-Title>${project.artifactId}</Specification-Title>

@@ -2,53 +2,60 @@ package me.asu.tui.linuxtools;
 
 import io.spring.IResource;
 import io.spring.PathMatchingResourcePatternResolver;
+import me.asu.tui.ShellWrapCmd;
+import me.asu.tui.api.*;
+import me.asu.tui.CliCmdLineParser;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import me.asu.tui.framework.api.CliCommand;
-import me.asu.tui.framework.api.CliContext;
-import me.asu.tui.framework.api.CliController;
-import me.asu.tui.framework.core.command.ShellWrapCmd;
-import me.asu.tui.framework.core.CmdCliController;
-import me.asu.tui.framework.util.CliCmdLineParser;
 
 /**
  * @author suk
  * @since 2018/8/17
  */
-public class LinuxToolsCmd implements CliCommand
-{
+public class LinuxToolsCmd implements CliCommand {
 
-    private static final String           NAMESPACE = "syscmd";
-    private static final String           CMD_NAME  = "linuxtool-wrap";
-    private              InnerDescriptor  descriptor;
-    private              Path             tmpDir;
-    private              CmdCliController container = null;
-    private              CliContext       ctx;
+    private static final String NAMESPACE = "syscmd";
+    private static final String CMD_NAME = "linuxtool-wrap";
+    private Path tmpDir;
+    private CmdCliController container = null;
+    private CliContext ctx;
+    private CliCmdLineParser parser = new CliCmdLineParser();
 
     @Override
-    public Descriptor getDescriptor()
-    {
-        return (descriptor != null) ? descriptor : (descriptor = new InnerDescriptor());
+    public String getNamespace() {
+        return NAMESPACE;
     }
 
     @Override
-    public Object execute(CliContext ctx, String[] args)
-    {
+    public String getName() {
+        return CMD_NAME;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Wrap linux tools for windows";
+    }
+
+    @Override
+    public CliCmdLineParser getCliCmdLineParser() {
+        return parser;
+    }
+
+    @Override
+    public Object execute(CliContext ctx, String[] args) {
         ctx.putValue(CliContext.KEY_COMMAND_LINE_ARGS, args);
         container.handle(ctx);
         return null;
     }
 
     @Override
-    public void plug(CliContext plug)
-    {
+    public void plug(CliContext plug) {
         ctx = plug;
         // register to container
         List<CliController> controllers = plug.getControllers();
@@ -78,8 +85,7 @@ public class LinuxToolsCmd implements CliCommand
                     if (!".exe".equalsIgnoreCase(ext)) {
                         return;
                     }
-                    ShellWrapCmd cmd = new ShellWrapCmd()
-                    {{
+                    ShellWrapCmd cmd = new ShellWrapCmd() {{
                         setName(baseName);
                         if ("vim".equalsIgnoreCase(baseName)) {
                             addCommand("start", p.toAbsolutePath().toString());
@@ -99,8 +105,7 @@ public class LinuxToolsCmd implements CliCommand
         }
     }
 
-    private boolean extractExecutablePrograms() throws IOException
-    {
+    private boolean extractExecutablePrograms() throws IOException {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
                 LinuxToolsCmd.class.getClassLoader());
         IResource[] resources = resolver.getResources("classpath*:/linux/*");
@@ -122,12 +127,11 @@ public class LinuxToolsCmd implements CliCommand
         }
     }
 
-    private byte[] readBytes(InputStream ins) throws IOException
-    {
-        ByteArrayOutputStream b=  new ByteArrayOutputStream();
+    private byte[] readBytes(InputStream ins) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
         byte[] buffer = new byte[8096];
         int read = 0;
-        while((read = ins.read(buffer)) >0 ) {
+        while ((read = ins.read(buffer)) > 0) {
             b.write(buffer, 0, read);
         }
 
@@ -135,10 +139,9 @@ public class LinuxToolsCmd implements CliCommand
     }
 
     @Override
-    public void unplug(CliContext plug)
-    {
+    public void unplug(CliContext plug) {
         try {
-            Files.list(tmpDir).forEach(p-> {
+            Files.list(tmpDir).forEach(p -> {
                 try {
                     Files.deleteIfExists(p);
                 } catch (IOException e) {
@@ -148,34 +151,6 @@ public class LinuxToolsCmd implements CliCommand
             Files.deleteIfExists(tmpDir);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private static class InnerDescriptor implements CliCommand.Descriptor
-    {
-        CliCmdLineParser parser = new CliCmdLineParser();
-        @Override
-        public String getNamespace()
-        {
-            return NAMESPACE;
-        }
-
-        @Override
-        public String getName()
-        {
-            return CMD_NAME;
-        }
-
-        @Override
-        public String getDescription()
-        {
-            return "Wrap linux tools for windows";
-        }
-
-        @Override
-        public CliCmdLineParser getCliCmdLineParser()
-        {
-            return parser;
         }
     }
 

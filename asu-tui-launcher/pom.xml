@@ -5,7 +5,7 @@
     <parent>
         <artifactId>asu-tui</artifactId>
         <groupId>me.asu</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,18 +19,19 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <main-class>me.asu.tui.Tool</main-class>
+        <main-class>me.asu.tui.Launcher</main-class>
     </properties>
     <dependencies>
         <dependency>
             <groupId>me.asu</groupId>
             <artifactId>asu-tui-api</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jline/jline -->
         <dependency>
-            <groupId>me.asu</groupId>
-            <artifactId>asu-tui-core</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.30.6</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -107,7 +108,7 @@
                             <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
                             <addClasspath>true</addClasspath>
                             <!--							<classpathPrefix>lib/</classpathPrefix>-->
-                            <mainClass>me.asu.tui.Tool</mainClass>
+                            <mainClass>me.asu.tui.Launcher</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Specification-Title>${project.artifactId}</Specification-Title>
@@ -178,13 +179,13 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>me.asu.tui.Tool</mainClass>
+                                    <mainClass>me.asu.tui.Launcher</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/me.asu.tui.framework.api.CliPlugin</resource>
+                                    <resource>META-INF/services/me.asu.tui.api.CliPlugin</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/me.asu.tui.framework.api.CliCommand</resource>
+                                    <resource>META-INF/services/me.asu.tui.api.CliCommand</resource>
                                 </transformer>
                             </transformers>
                         </configuration>

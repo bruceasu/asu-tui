@@ -1,0 +1,10 @@
+me.asu.tui.builtin.JobsCmd
+me.asu.tui.builtin.KillCmd
+me.asu.tui.builtin.HelpCmd
+me.asu.tui.builtin.SysInfoCmd
+me.asu.tui.builtin.EchoCmd
+me.asu.tui.builtin.ExitCmd
+me.asu.tui.builtin.GcCmd
+me.asu.tui.builtin.HistoryCmd
+me.asu.tui.builtin.Native2asciiCmd
+me.asu.tui.builtin.CdCmd
